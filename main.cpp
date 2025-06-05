@@ -12,37 +12,44 @@
 using namespace std;
 
 sf::Vector2u screenRes;
-sf::RenderWindow window(sf::VideoMode({1920, 1080}), "Space Wars");
+sf::RenderWindow window(sf::VideoMode({1080, 1080}), "Space Wars");
+const int amountOfStarts = 100;
+float starsLocationsx[amountOfStarts];
+float starsLocationsy[amountOfStarts];
 
-sf::Vector2f starsLocations[40];
-sf::Texture starTexture;
+
+
 
 void initStars(){
     srand(time(0));
     
 
-    for(sf::Vector2f s : starsLocations)
+    for(int i = 0; i< amountOfStarts;i++)
     {
         float x = (static_cast<float>(rand() % 100) / 100.0f) * 1920;
         float y = (static_cast<float>(rand() % 100) / 100.0f) * 1080;
-        s.x = x;
-        s.y = y;
+        starsLocationsx[i] = x;
+        starsLocationsy[i] = y;
     }
 }
 
 void drawStars(){
-    for(sf::Vector2f l : starsLocations)
+    sf::Texture starTexture;
+    starTexture.loadFromFile("star.png");
+    for(int i = 0; i< amountOfStarts;i++)
     {
+
         sf::Sprite s;
-        s.setPosition(l);
-        
+        s.setPosition(starsLocationsx[i], starsLocationsy[i]);
+        s.setTexture(starTexture);
+        s.setScale(2,2);
         window.draw(s);
 
     }
 }
 int main()
 {
-    starTexture.loadFromFile("star.png");
+
     initStars();
     screenRes = window.getSize();
     window.setFramerateLimit(60);
@@ -78,11 +85,17 @@ int main()
         }
 
         window.clear(); 
+        sf::Texture t;
+        t.loadFromFile("outline.png");
+        sf::Sprite outline(t);
+        drawStars();
+        window.draw(outline);
 
+        
         p.updatePosition();
         window.draw(p.getSprite());
-        drawStars();
-        window.draw(stars[0]);
+        
+
 
         window.display();
     }
