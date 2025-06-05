@@ -1,7 +1,11 @@
 #include <iostream> 
+#include <math.h>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
-#include <SFML/System.hpp>
+#include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
+#include <SFML/Network.hpp>
+
 
 using namespace std;
 
@@ -17,7 +21,7 @@ class Player
 
         int x;
         int y;
-        sf::Vector3f velocity;
+        sf::Vector2f velocity;
         Player(int x, int y){
             this->x =x;
             this->y =y;
@@ -29,27 +33,37 @@ class Player
             rotation = 0;
         }
         void turnLeft(){
-            rotation-=1;
+            rotation-=2;
         }
 
         void turnRight(){
-            rotation+=1;
+            rotation+=2;
         }
 
+        sf::Vector2f rotateVector(sf::Vector2f v, float r){
+            r = r*M_PI/180.0;
+            return sf::Vector2f(v.x*cos(r) - v.y*sin(r), v.x*sin(r) + v.y*cos(r));
+        }
+        float getVectorLength(sf::Vector2f v){
+            return(v.x * v.x + v.y * v.y );
+        }
         void forwardsImpulse()
         {
-            sf::Vector2f v(0,0.1);
-            sf::Vector2f nv;
-            nv.x = (v.x*cos(rotation) - v.y*sin(rotation));
-            nv.y = (v.x*sin(rotation) + v.y*cos(rotation));
-            velocity.x+=nv.x;
-            velocity.y+=nv.y;
-            cout<<velocity.x <<" "<< velocity.y<<"\n";
+            sf::Vector2f v(0,-0.1);
+            v = rotateVector(v, rotation);
+            
+
+            velocity.x+=v.x;
+            velocity.y+=v.y;
+
+
+
         }
 
         void updatePosition(){
             x+=velocity.x;
             y+=velocity.y;
+            
         }
 
         sf::Sprite getSprite(){

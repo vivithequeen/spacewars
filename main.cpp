@@ -7,15 +7,43 @@
 #include <SFML/Network.hpp>
 #include <optional>
 #include "Player.cpp"
+#include <cstdlib>
+#include <ctime>
 using namespace std;
 
 sf::Vector2u screenRes;
 sf::RenderWindow window(sf::VideoMode({1920, 1080}), "Space Wars");
 
+sf::Vector2f starsLocations[40];
+sf::Texture starTexture;
 
+void initStars(){
+    srand(time(0));
+    
+
+    for(sf::Vector2f s : starsLocations)
+    {
+        float x = (static_cast<float>(rand() % 100) / 100.0f) * 1920;
+        float y = (static_cast<float>(rand() % 100) / 100.0f) * 1080;
+        s.x = x;
+        s.y = y;
+    }
+}
+
+void drawStars(){
+    for(sf::Vector2f l : starsLocations)
+    {
+        sf::Sprite s;
+        s.setPosition(l);
+        
+        window.draw(s);
+
+    }
+}
 int main()
 {
-    
+    starTexture.loadFromFile("star.png");
+    initStars();
     screenRes = window.getSize();
     window.setFramerateLimit(60);
     Player p(400,400);
@@ -53,8 +81,8 @@ int main()
 
         p.updatePosition();
         window.draw(p.getSprite());
- 
-
+        drawStars();
+        window.draw(stars[0]);
 
         window.display();
     }
