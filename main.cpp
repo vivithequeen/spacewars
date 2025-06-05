@@ -17,8 +17,8 @@ int main()
 {
     
     screenRes = window.getSize();
-    window.setFramerateLimit(1);
-    Player p(1,1);
+    window.setFramerateLimit(60);
+    Player p(400,400);
     
 
     while (window.isOpen())
@@ -32,9 +32,29 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
         }
-        
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Left))
+        {
+            // left key is pressed: move our character
+            p.turnLeft();
+
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Right))
+        {
+            // left key is pressed: move our character
+            p.turnRight();
+
+        }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Up)){
+            p.forwardsImpulse();
+            
+        }
+
         window.clear(); 
+
+        p.updatePosition();
         window.draw(p.getSprite());
+ 
+
 
         window.display();
     }
