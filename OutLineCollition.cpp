@@ -5,30 +5,34 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
-
+#include "Collider.cpp"
 
 using namespace std;
+
 
 class OutLineCollition
 {
     public:
-    int x;
-    int y;
-    OutLineCollition(){
-
-    }
-
-
-    void setPosition(sf::Vector2i pos){
-        x =pos.x;
-        y =pos.y;
-    }
-    sf::RectangleShape getSprite(){
+    
+        Collider collider;
+        int x;
+        int y;
+        OutLineCollition(){
             
-        sf::RectangleShape r(sf::Vector2f(4,4));
-        r.setOrigin(2,2);
-        r.setFillColor(sf::Color::Red);
-        r.setPosition(x,y);
-        return r;
-    }
+        }
+
+
+        void setPosition(sf::Vector2i pos){
+            x =pos.x;
+            y =pos.y;
+            collider = Collider(x,y,4,4);
+        }
+        sf::RectangleShape getSprite(){
+            
+            sf::RectangleShape r(sf::Vector2f(4,4));
+            r.setOrigin(2,2);
+            r.setFillColor(sf::Color::Red);
+            r.setPosition(x,y);
+            return r;
+        }
 };

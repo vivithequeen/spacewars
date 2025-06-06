@@ -1,3 +1,8 @@
+#include <iostream> 
+using namespace std;
+#ifndef COLLIDER
+#define COLLIDER
+
 class Collider
 {
     public:
@@ -29,3 +34,4 @@ class Collider
         return (c.x <= x && c.x +c.xwidth >= x + xwidth) && (c.y <= y && c.y +c.ywidth >= y + ywidth);
     }
 };
+#endif

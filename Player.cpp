@@ -5,24 +5,24 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
-
+#include "Collider.cpp"
 
 using namespace std;
 
 class Player 
 {
-
-
     public:
         sf::Texture texture;
-
+        Collider collider;
 
         float rotation;
 
         int x;
         int y;
         sf::Vector2f velocity;
+
         Player(int x, int y){
+            collider = Collider(x,y,32,32);
             this->x =x;
             this->y =y;
 
@@ -32,6 +32,7 @@ class Player
             sprite.setOrigin(16,16);
             rotation = 0;
         }
+
         void turnLeft(){
             rotation-=2;
         }
@@ -44,9 +45,11 @@ class Player
             r = r*M_PI/180.0;
             return sf::Vector2f(v.x*cos(r) - v.y*sin(r), v.x*sin(r) + v.y*cos(r));
         }
+
         float getVectorLength(sf::Vector2f v){
             return(v.x * v.x + v.y * v.y );
         }
+
         void forwardsImpulse()
         {
             sf::Vector2f v(0,-0.1);
@@ -63,7 +66,7 @@ class Player
         void updatePosition(){
             x+=velocity.x;
             y+=velocity.y;
-            
+            collider.updatePosition(x,y);
         }
 
         sf::Sprite getSprite(){
@@ -72,6 +75,12 @@ class Player
             sprite.setRotation(rotation);
             sprite.setPosition(x,y);
             return sprite;
+        }
+        void fireLazer(){
+            sf::SoundBuffer zap;
+            zap.loadFromFile("laserShoot.wav");
+            sf::Sound sound(zap);
+            sound.play();
         }
     private:
         

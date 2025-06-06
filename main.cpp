@@ -6,18 +6,21 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
 #include <optional>
-#include "Player.cpp"
 #include "OutLineCollition.cpp"
-#include "Collider.cpp"
+#include "Player.cpp"
+
 #include <cstdlib>
 #include <ctime>
+
 using namespace std;
 
 const int screenWidth = 1080;
 sf::RenderWindow window(sf::VideoMode({screenWidth, screenWidth}), "Space Wars");
-const int amountOfStarts = 100;
-float starsLocationsx[amountOfStarts];
-float starsLocationsy[amountOfStarts];
+
+const int amountOfStars = 100;
+
+float starsLocationsx[amountOfStars];
+float starsLocationsy[amountOfStars];
 
 
 OutLineCollition colliders[360];
@@ -31,7 +34,7 @@ void initStars(){
     srand(time(0));
     
 
-    for(int i = 0; i< amountOfStarts;i++)
+    for(int i = 0; i< amountOfStars;i++)
     {
         float x = (static_cast<float>(rand() % 100) / 100.0f) * 1920;
         float y = (static_cast<float>(rand() % 100) / 100.0f) * 1080;
@@ -43,7 +46,7 @@ void initStars(){
 void drawStars(){
     sf::Texture starTexture;
     starTexture.loadFromFile("star.png");
-    for(int i = 0; i< amountOfStarts;i++)
+    for(int i = 0; i< amountOfStars;i++)
     {
 
         sf::Sprite s;
@@ -76,10 +79,10 @@ int main()
     initStars();
 
     window.setFramerateLimit(60);
-    Player p(400,400);
-    Collider c1(11,0,10,10);
+    Player p(screenWidth/2,screenWidth/2);
+    Collider c1(0,0,10,32);
     Collider c2(0,0,10,10);
-    cout<<c1.checkCollition(c2);
+    cout<<c2.checkCollition(c1);
 
     while (window.isOpen())
     {
@@ -109,6 +112,18 @@ int main()
             
         }
 
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+        {
+            p.fireLazer();
+        }
+        for(int i = 0; i < 360;i++){
+            if(colliders[i].collider.checkCollition(p.collider)){
+                cout<<i<<"\n";
+            }
+
+        }
+
+
         window.clear(); 
         sf::Texture t;
         t.loadFromFile("outline.png");
@@ -117,7 +132,7 @@ int main()
         window.draw(outline);
 
         p.updatePosition();
-        window.draw(p.getSprite());\
+        window.draw(p.getSprite());
 
         drawColliders();
 
