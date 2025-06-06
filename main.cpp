@@ -7,18 +7,25 @@
 #include <SFML/Network.hpp>
 #include <optional>
 #include "Player.cpp"
+#include "OutLineCollition.cpp"
+#include "Collider.cpp"
 #include <cstdlib>
 #include <ctime>
 using namespace std;
 
-sf::Vector2u screenRes;
-sf::RenderWindow window(sf::VideoMode({1080, 1080}), "Space Wars");
+const int screenWidth = 1080;
+sf::RenderWindow window(sf::VideoMode({screenWidth, screenWidth}), "Space Wars");
 const int amountOfStarts = 100;
 float starsLocationsx[amountOfStarts];
 float starsLocationsy[amountOfStarts];
 
 
+OutLineCollition colliders[360];
 
+sf::Vector2i rotateVector(sf::Vector2i v, float r){
+    r = r*M_PI/180.0;
+    return sf::Vector2i(v.x*cos(r) - v.y*sin(r), v.x*sin(r) + v.y*cos(r));
+}
 
 void initStars(){
     srand(time(0));
@@ -47,14 +54,32 @@ void drawStars(){
 
     }
 }
+void setColliders(){
+
+    
+    for(int i = 0; i < 360;i++){
+        sf::Vector2i s(0,screenWidth/2);
+        sf::Vector2i v = rotateVector(s, i);
+        colliders[i].setPosition(v + sf::Vector2i(540,540));
+
+    }
+}
+void drawColliders(){
+    for(int i = 0; i < 360;i++){
+        window.draw(colliders[i].getSprite());
+        
+    }
+}
 int main()
 {
-
+    setColliders();
     initStars();
-    screenRes = window.getSize();
+
     window.setFramerateLimit(60);
     Player p(400,400);
-    
+    Collider c1(11,0,10,10);
+    Collider c2(0,0,10,10);
+    cout<<c1.checkCollition(c2);
 
     while (window.isOpen())
     {
@@ -91,10 +116,10 @@ int main()
         drawStars();
         window.draw(outline);
 
-        
         p.updatePosition();
-        window.draw(p.getSprite());
-        
+        window.draw(p.getSprite());\
+
+        drawColliders();
 
 
         window.display();
