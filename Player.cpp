@@ -14,9 +14,10 @@ class Player
     public:
         sf::Texture texture;
         Collider collider;
+        const int MAXSPEED = 10;
 
         float rotation;
-
+        
         int x;
         int y;
         sf::Vector2f velocity;
@@ -49,21 +50,32 @@ class Player
         float getVectorLength(sf::Vector2f v){
             return(v.x * v.x + v.y * v.y );
         }
-
-        void forwardsImpulse()
+        sf::Vector2f getNormalizedVector(sf::Vector2f v){
+            float vlength = getVectorLength(v);
+            return sf::Vector2f(v.x / vlength, v.y / vlength);
+        }
+        void forwardsImpulse(int strength)
         {
             sf::Vector2f v(0,-0.1);
             v = rotateVector(v, rotation);
             
 
-            velocity.x+=v.x;
-            velocity.y+=v.y;
+            velocity.x+=v.x * strength;
+            velocity.y+=v.y * strength;
 
 
 
         }
-
+        void setPosition(int x, int y){
+            this->x =x;
+            this->y =y;
+        }
         void updatePosition(){
+            if(getVectorLength(velocity) > MAXSPEED){
+                velocity = getNormalizedVector(velocity);
+                velocity.x*=MAXSPEED;
+                velocity.y*=MAXSPEED;
+            }
             x+=velocity.x;
             y+=velocity.y;
             collider.updatePosition(x,y);

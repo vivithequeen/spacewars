@@ -17,6 +17,7 @@ class OutLineCollition
         Collider collider;
         int x;
         int y;
+        int id;
         OutLineCollition(){
             
         }
@@ -34,5 +35,13 @@ class OutLineCollition
             r.setFillColor(sf::Color::Red);
             r.setPosition(x,y);
             return r;
+        }
+        int getOpposite()
+        {
+            int opp = id - 180;
+            if(opp < 0){
+                opp+=360;
+            }
+            return opp;
         }
 };

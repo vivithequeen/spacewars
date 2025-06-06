@@ -64,6 +64,7 @@ void setColliders(){
         sf::Vector2i s(0,screenWidth/2);
         sf::Vector2i v = rotateVector(s, i);
         colliders[i].setPosition(v + sf::Vector2i(540,540));
+        colliders[i].id = i;
 
     }
 }
@@ -73,6 +74,7 @@ void drawColliders(){
         
     }
 }
+int tpCooldown =0;
 int main()
 {
     setColliders();
@@ -86,7 +88,7 @@ int main()
 
     while (window.isOpen())
     {
-
+        tpCooldown-=1;
 
         sf::Event event;
         while (window.pollEvent(event))
@@ -108,7 +110,7 @@ int main()
 
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Up)){
-            p.forwardsImpulse();
+            p.forwardsImpulse(1);
             
         }
 
@@ -117,8 +119,10 @@ int main()
             p.fireLazer();
         }
         for(int i = 0; i < 360;i++){
-            if(colliders[i].collider.checkCollition(p.collider)){
-                cout<<i<<"\n";
+            if(colliders[i].collider.checkCollition(p.collider) and tpCooldown < 0){
+                p.setPosition(colliders[colliders[i].getOpposite()].x,colliders[colliders[i].getOpposite()].y);
+
+                tpCooldown = 25;
             }
 
         }
@@ -129,12 +133,13 @@ int main()
         t.loadFromFile("outline.png");
         sf::Sprite outline(t);
         drawStars();
-        window.draw(outline);
+        
 
         p.updatePosition();
         window.draw(p.getSprite());
+        window.draw(outline);
 
-        drawColliders();
+
 
 
         window.display();
