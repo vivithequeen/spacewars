@@ -29,7 +29,7 @@ class Player
             this->x =x;
             this->y =y;
 
-            texture.loadFromFile("spaceShip.png");
+            texture.loadFromFile("textures/spaceShip.png");
             sprite.setTexture(texture);
             sprite.scale(2,2);
             sprite.setOrigin(8,8);

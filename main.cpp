@@ -26,6 +26,7 @@ float starsLocationsy[amountOfStars];
 Sun sun;
 OutLineCollition colliders[360];
 sf::SoundBuffer zap;
+sf::Texture t;
 sf::Vector2i rotateVector(sf::Vector2i v, float r){
     r = r*M_PI/180.0;
     return sf::Vector2i(v.x*cos(r) - v.y*sin(r), v.x*sin(r) + v.y*cos(r));
@@ -46,7 +47,7 @@ void initStars(){
 
 void drawStars(){
     sf::Texture starTexture;
-    starTexture.loadFromFile("star.png");
+    starTexture.loadFromFile("textures/star.png");
     for(int i = 0; i< amountOfStars;i++)
     {
 
@@ -84,8 +85,8 @@ int main()
 
     setColliders();
     initStars();
-    if(!zap.loadFromFile("laserShoot.wav")){return -1;}
-
+    if(!zap.loadFromFile("audio/laserShoot.wav")){return -1;}
+    if(!t.loadFromFile("textures/outline.png")){return -1;}
 
     window.setFramerateLimit(60);
     
@@ -153,8 +154,8 @@ int main()
         sf::RectangleShape r(sf::Vector2f(screenWidth,screenWidth));
         r.setFillColor(sf::Color(13,43,69));
         window.draw(r);
-        sf::Texture t;
-        t.loadFromFile("outline.png");
+        
+        
         sf::Sprite outline(t);
         drawStars();
         window.draw(sun.debugDraw(p));

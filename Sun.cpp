@@ -19,7 +19,7 @@ public:
     {
         x = 1080 / 2;
         y = 1080 / 2;
-        texture.loadFromFile("sun.png");
+        texture.loadFromFile("textures/sun.png");
         sprite.setTexture(texture);
         sprite.scale(2,2);
         sprite.setOrigin(3,3);
