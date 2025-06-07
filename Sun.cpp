@@ -12,12 +12,17 @@ class Sun
 {
 public:
     int x, y;
-    const int r = 1080/4;
+    sf::Texture texture;
+    const int r = 1080/8;
 
     Sun()
     {
         x = 1080 / 2;
         y = 1080 / 2;
+        texture.loadFromFile("sun.png");
+        sprite.setTexture(texture);
+        sprite.scale(2,2);
+        sprite.setOrigin(3,3);
     }        
     float getVectorLength(sf::Vector2f v){
         return(v.x * v.x + v.y * v.y );
@@ -30,6 +35,13 @@ public:
     {        
         return ((cx-x) * (cx-x)) + ((cy - y) * (cy - y)) < r*r;
     }
+
+    sf::Sprite getSprite(){
+        sprite.setPosition(x,y);
+        
+        return sprite;
+    }
+
     sf::CircleShape debugDraw(Player p){
         sf::CircleShape c;
         c.setRadius(r);
@@ -38,12 +50,7 @@ public:
     
         return c;
     }
-    void update(Player p){
-        if(checkCollition(p.x,p.y)){
-            sf::Vector2f pvec = getNormalizedVector(sf::Vector2f(400, 400));
-            pvec.x*=100000;
-            pvec.y*=100000;
-            p.forwardsImpulse(1);
-        }
-    }
+    private:
+        
+        sf::Sprite sprite;
 };

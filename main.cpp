@@ -82,7 +82,8 @@ int main()
     initStars();
 
     window.setFramerateLimit(60);
-    Player p(screenWidth/2,screenWidth/2);
+    
+    Player p(screenWidth/2,100);
     Collider c1(0,0,10,32);
     Collider c2(0,0,10,10);
     cout<<c2.checkCollition(c1);
@@ -117,8 +118,16 @@ int main()
 
         if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
         {
-            p.fireLazer();
+            if(p.fireLazer())
+            {
+                sf::SoundBuffer zap;
+                zap.loadFromFile("laserShoot.wav");
+                sf::Sound sound(zap);
+                sound.play();
+
+            }
         }
+
         for(int i = 0; i < 360;i++){
             if(colliders[i].collider.checkCollition(p.collider) and tpCooldown < 0){
                 p.setPosition(colliders[colliders[i].getOpposite()].x,colliders[colliders[i].getOpposite()].y);
@@ -127,19 +136,29 @@ int main()
             }
 
         }
-        sun.update(p);
+        if(sun.checkCollition(p.x,p.y)){
+            sf::Vector2f nv =sf::Vector2f(sun.x,sun.y) - sf::Vector2f(p.x,p.y);
+            nv.x/=2000;
+            nv.y/=2000;
+            p.addVelocity(nv);
+        }
 
         window.clear(); 
+
+        sf::RectangleShape r(sf::Vector2f(screenWidth,screenWidth));
+        r.setFillColor(sf::Color(13,43,69));
+        window.draw(r);
         sf::Texture t;
         t.loadFromFile("outline.png");
         sf::Sprite outline(t);
         drawStars();
         window.draw(sun.debugDraw(p));
+        
 
         p.updatePosition();
         window.draw(p.getSprite());
         window.draw(outline);
-
+        window.draw(sun.getSprite());
 
 
 

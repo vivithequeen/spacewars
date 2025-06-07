@@ -16,7 +16,7 @@ class Player
     public:
         sf::Texture texture;
         Collider collider;
-        const int MAXSPEED = 10;
+        const int MAXSPEED = 12;
 
         float rotation;
         
@@ -94,11 +94,8 @@ class Player
             sprite.setPosition(x,y);
             return sprite;
         }
-        void fireLazer(){
-            sf::SoundBuffer zap;
-            zap.loadFromFile("laserShoot.wav");
-            sf::Sound sound(zap);
-            sound.play();
+        bool fireLazer(){
+            return true;
         }
     private:
         
