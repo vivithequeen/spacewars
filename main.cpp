@@ -25,7 +25,7 @@ float starsLocationsy[amountOfStars];
 
 Sun sun;
 OutLineCollition colliders[360];
-
+sf::SoundBuffer zap;
 sf::Vector2i rotateVector(sf::Vector2i v, float r){
     r = r*M_PI/180.0;
     return sf::Vector2i(v.x*cos(r) - v.y*sin(r), v.x*sin(r) + v.y*cos(r));
@@ -75,11 +75,17 @@ void drawColliders(){
         
     }
 }
+
+
+
 int tpCooldown =0;
 int main()
 {
+
     setColliders();
     initStars();
+    if(!zap.loadFromFile("laserShoot.wav")){return -1;}
+
 
     window.setFramerateLimit(60);
     
@@ -87,6 +93,8 @@ int main()
     Collider c1(0,0,10,32);
     Collider c2(0,0,10,10);
     cout<<c2.checkCollition(c1);
+    bool lmbPressed = false;
+
 
     while (window.isOpen())
     {
@@ -111,21 +119,18 @@ int main()
             p.turnRight();
 
         }
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Up)){
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Up)){ 
             p.forwardsImpulse(1);
             
         }
 
         if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
         {
-            if(p.fireLazer())
-            {
-                sf::SoundBuffer zap;
-                zap.loadFromFile("laserShoot.wav");
-                sf::Sound sound(zap);
-                sound.play();
-
-            }
+            p.fireLazer();
+            
+        }
+        else{
+            lmbPressed = false;
         }
 
         for(int i = 0; i < 360;i++){
@@ -138,8 +143,8 @@ int main()
         }
         if(sun.checkCollition(p.x,p.y)){
             sf::Vector2f nv =sf::Vector2f(sun.x,sun.y) - sf::Vector2f(p.x,p.y);
-            nv.x/=2000;
-            nv.y/=2000;
+            nv.x/=1300;
+            nv.y/=1300;
             p.addVelocity(nv);
         }
 

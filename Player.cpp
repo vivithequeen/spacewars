@@ -16,23 +16,23 @@ class Player
     public:
         sf::Texture texture;
         Collider collider;
-        const int MAXSPEED = 12;
+        const int MAXSPEED = 6;
 
         float rotation;
         
-        int x;
-        int y;
+        float x;
+        float y;
         sf::Vector2f velocity;
 
         Player(int x, int y){
-            collider = Collider(x,y,32,32);
+            collider = Collider(x,y,16,16);
             this->x =x;
             this->y =y;
 
             texture.loadFromFile("spaceShip.png");
             sprite.setTexture(texture);
             sprite.scale(2,2);
-            sprite.setOrigin(16,16);
+            sprite.setOrigin(8,8);
             rotation = 0;
         }
 
@@ -78,9 +78,9 @@ class Player
         }
         void updatePosition(){
             if(getVectorLength(velocity) > MAXSPEED){
-                velocity = getNormalizedVector(velocity);
-                velocity.x*=MAXSPEED;
-                velocity.y*=MAXSPEED;
+                sf::Vector2f vc(velocity.x,velocity.y);
+                velocity.x*= MAXSPEED/getVectorLength(vc);
+                velocity.y*= MAXSPEED/getVectorLength(vc);
             }
             x+=velocity.x;
             y+=velocity.y;
@@ -88,7 +88,7 @@ class Player
         }
 
         sf::Sprite getSprite(){
-            
+
             
             sprite.setRotation(rotation);
             sprite.setPosition(x,y);
