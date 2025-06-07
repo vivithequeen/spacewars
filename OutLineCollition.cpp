@@ -28,7 +28,7 @@ class OutLineCollition
             y =pos.y;
             collider = Collider(x,y,4,4);
         }
-        sf::RectangleShape getSprite(){
+        sf::RectangleShape debugDraw(){
             
             sf::RectangleShape r(sf::Vector2f(4,4));
             r.setOrigin(2,2);

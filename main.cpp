@@ -8,6 +8,7 @@
 #include <optional>
 #include "OutLineCollition.cpp"
 #include "Player.cpp"
+#include "Sun.cpp"
 
 #include <cstdlib>
 #include <ctime>
@@ -22,7 +23,7 @@ const int amountOfStars = 100;
 float starsLocationsx[amountOfStars];
 float starsLocationsy[amountOfStars];
 
-
+Sun sun;
 OutLineCollition colliders[360];
 
 sf::Vector2i rotateVector(sf::Vector2i v, float r){
@@ -70,7 +71,7 @@ void setColliders(){
 }
 void drawColliders(){
     for(int i = 0; i < 360;i++){
-        window.draw(colliders[i].getSprite());
+        window.draw(colliders[i].debugDraw());
         
     }
 }
@@ -126,14 +127,14 @@ int main()
             }
 
         }
-
+        sun.update(p);
 
         window.clear(); 
         sf::Texture t;
         t.loadFromFile("outline.png");
         sf::Sprite outline(t);
         drawStars();
-        
+        window.draw(sun.debugDraw(p));
 
         p.updatePosition();
         window.draw(p.getSprite());

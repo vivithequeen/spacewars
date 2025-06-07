@@ -8,6 +8,8 @@
 #include "Collider.cpp"
 
 using namespace std;
+#ifndef PLAYER
+#define PLAYER
 
 class Player 
 {
@@ -54,6 +56,10 @@ class Player
             float vlength = getVectorLength(v);
             return sf::Vector2f(v.x / vlength, v.y / vlength);
         }
+        void addVelocity(sf::Vector2f v){
+            velocity.x+=v.x;
+            velocity.y+=v.y;
+        }
         void forwardsImpulse(int strength)
         {
             sf::Vector2f v(0,-0.1);
@@ -99,3 +105,4 @@ class Player
         sf::Sprite sprite;
         
 };
+#endif
