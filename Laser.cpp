@@ -12,28 +12,30 @@ using namespace std;
 class Laser
 {
     public:
+    bool isEmpty;
     float x, y;
     float vx, vy;
-    bool exists = true;
+
     float rotation;
     sf::Vector2f distanceV;
     sf::Texture texture;
     Laser()
     {
+        isEmpty = true;
         x=0;
         y=0;
     }
 
     Laser(int x, int y,float r, float vx, float vy){
-
+        isEmpty = false;
         texture.loadFromFile("textures/laser.png");
         sprite.setTexture(texture);
         sprite.setOrigin(1.5,3);
         sprite.setRotation(r);
         this -> x  =x;
         this -> y = y;
-        this -> vx  =10;//vx;
-        this -> vy = 10;//vy;
+        this -> vx  =vx;//vx;
+        this -> vy = vy;//vy;
         rotation = r;
         
 
@@ -42,10 +44,16 @@ class Laser
     bool checkInBounds(){
         return(x > 0 && y > 0 && x < 1080 && y < 1080);
     }
-    void update(){
-        cout<<vx;
-        x+=vx;
-        y+=vy;
+    bool update(){
+        if(checkInBounds())
+        {
+            x+=vx;
+            y+=vy;
+            return false;
+        }
+        else{
+            return true;
+        }
     }
     sf::Sprite getSprite(){
         sprite.setPosition(x,y);

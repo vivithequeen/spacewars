@@ -27,7 +27,7 @@ Sun sun;
 OutLineCollition colliders[360];
 sf::SoundBuffer zap;
 sf::Texture t;
-vector<Laser> lasers;
+Laser lasers[1024];
 
 Player p(screenWidth/2,100);
 
@@ -77,6 +77,15 @@ void setColliders(){
 
     }
 }
+int findEmptyLaser(){
+    for(int i = 0; i < sizeof(lasers);i++){
+        if(lasers[i].isEmpty){
+            return i;
+        }
+    }
+    cout<<"ah fuck";
+    return -1;
+}
 void drawColliders(){
     for(int i = 0; i < 360;i++){
         window.draw(colliders[i].debugDraw());
@@ -87,7 +96,7 @@ bool fireLaser(){
     sf::Vector2f rv(0,-10);
     sf::Vector2f r = rotateVector(rv, p.rotation);
     //cout<<r.x;
-    lasers.push_back(Laser(p.x,p.y,p.rotation, r.x,r.y));
+    lasers[findEmptyLaser()] = Laser(p.x,p.y,p.rotation, r.x,r.y);
     return true;
 }
 
@@ -181,10 +190,15 @@ int main()
         window.draw(p.getSprite());
         window.draw(outline);
         window.draw(sun.getSprite());
-        for(Laser l : lasers)
+        for(int i = 0; i < 1024;i++)
         {
-            l.update();
-            window.draw(l.getSprite());
+            if(!lasers[i].isEmpty)
+            {
+                if(lasers[i].update()){
+                    lasers[i] = Laser();
+                }
+                window.draw(lasers[i].getSprite());
+            }
         }
 
 
