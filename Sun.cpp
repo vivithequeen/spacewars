@@ -13,7 +13,7 @@ class Sun
 public:
     int x, y;
     sf::Texture texture;
-    const int r = 1080/8;
+    const int r = 1080/2;
 
     Sun()
     {

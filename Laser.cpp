@@ -40,7 +40,10 @@ class Laser
         
 
     }
-
+    void addVelocity(sf::Vector2f v){
+        vx += v.x;
+        vy += v.y;
+    }
     bool checkInBounds(){
         return(x > 0 && y > 0 && x < 1080 && y < 1080);
     }

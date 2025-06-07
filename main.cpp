@@ -29,7 +29,8 @@ sf::SoundBuffer zap;
 sf::Texture t;
 Laser lasers[1024];
 
-Player p(screenWidth/2,100);
+Player p1(screenWidth/2,128, "textures/spaceShip.png");
+Player p2(screenWidth/2,1080-128,  "textures/spaceShip2.png");
 
 sf::Vector2i rotateVector(sf::Vector2i v, float r){
     r = r*M_PI/180.0;
@@ -92,15 +93,83 @@ void drawColliders(){
         
     }
 }
-bool fireLaser(){
+float getVectorLength(sf::Vector2f v){
+    return(v.x * v.x + v.y * v.y );
+}
+sf::Vector2f getNormalizedVector(sf::Vector2f v){
+    float vlength = getVectorLength(v);
+    return sf::Vector2f(v.x / vlength, v.y / vlength);
+}
+bool p1fireLaser(){
     sf::Vector2f rv(0,-10);
-    sf::Vector2f r = rotateVector(rv, p.rotation);
+    sf::Vector2f r = rotateVector(rv, p1.rotation);
     //cout<<r.x;
-    lasers[findEmptyLaser()] = Laser(p.x,p.y,p.rotation, r.x,r.y);
+    lasers[findEmptyLaser()] = Laser(p1.x,p1.y,p1.rotation, r.x,r.y);
     return true;
 }
+bool p2fireLaser(){
+    sf::Vector2f rv(0,-10);
+    sf::Vector2f r = rotateVector(rv, p2.rotation);
+    //cout<<r.x;
+    lasers[findEmptyLaser()] = Laser(p2.x,p2.y,p2.rotation, r.x,r.y);
+    return true;
+}
+void p1Inputs(){
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Left))
+    {
+        // left key is pressed: move our character
+        p1.turnLeft();
 
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Right))
+    {
+        // left key is pressed: move our character
+        p1.turnRight();
 
+    }
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Up)){ 
+        p1.forwardsImpulse(1);
+
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Down))
+    {
+        if(p1.laserCoolDown<0)
+        {
+            p1fireLaser();
+            p1.laserCoolDown=10;
+        }
+
+    }  
+}
+void p2Inputs(){
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::A))
+    {
+        // left key is pressed: move our character
+        p2.turnLeft();
+
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::D))
+    {
+        // left key is pressed: move our character
+        p2.turnRight();
+
+    }
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::W)){ 
+        p2.forwardsImpulse(1);
+
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::S))
+    {
+        if(p2.laserCoolDown<0)
+        {
+            p2fireLaser();
+            p2.laserCoolDown=10;
+        }
+
+    }  
+}
 
 int main()
 {
@@ -121,9 +190,10 @@ int main()
 
     while (window.isOpen())
     {
-        p.teleportCoolDown-=1;
-        p.laserCoolDown-=1;
-
+        p1.teleportCoolDown-=1;
+        p1.laserCoolDown-=1;
+        p2.teleportCoolDown-=1;
+        p2.laserCoolDown-=1;
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -131,75 +201,66 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Left))
-        {
-            // left key is pressed: move our character
-            p.turnLeft();
 
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Right))
-        {
-            // left key is pressed: move our character
-            p.turnRight();
-
-        }
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Up)){ 
-            p.forwardsImpulse(1);
-            
-        }
-
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
-        {
-            if(p.laserCoolDown<0)
-            {
-                fireLaser();
-                p.laserCoolDown=10;
-            }
-            
-        }
-
+        p1Inputs();
+        p2Inputs();
         for(int i = 0; i < 360;i++){
-            if(colliders[i].collider.checkCollition(p.collider) and p.teleportCoolDown < 0){
-                p.setPosition(colliders[colliders[i].getOpposite()].x,colliders[colliders[i].getOpposite()].y);
+            if(colliders[i].collider.checkCollition(p1.collider) and p1.teleportCoolDown < 0){
+                p1.setPosition(colliders[colliders[i].getOpposite()].x,colliders[colliders[i].getOpposite()].y);
 
-                p.teleportCoolDown = 25;
+                p1.teleportCoolDown = 25;
+            }
+            if(colliders[i].collider.checkCollition(p2.collider) and p2.teleportCoolDown < 0){
+                p2.setPosition(colliders[colliders[i].getOpposite()].x,colliders[colliders[i].getOpposite()].y);
+
+                p2.teleportCoolDown = 25;
             }
 
         }
-        if(sun.checkCollition(p.x,p.y)){
-            sf::Vector2f nv =sf::Vector2f(sun.x,sun.y) - sf::Vector2f(p.x,p.y);
-            nv.x/=1300;
-            nv.y/=1300;
-            p.addVelocity(nv);
-        }
+        sf::Vector2f p1nv =sf::Vector2f(sun.x,sun.y) - sf::Vector2f(p1.x,p1.y);
+        sf::Vector2f p2nv =sf::Vector2f(sun.x,sun.y) - sf::Vector2f(p2.x,p2.y);
+        float p1nvl = getVectorLength(p1nv);
+        float p2nvl = getVectorLength(p2nv);
+        p1nv.x /= p1nvl / 2.0;
+        p1nv.y /= p1nvl / 2.0;
+        p2nv.x /= p2nvl / 2.0;
+        p2nv.y /= p2nvl / 2.0;
+        p1.addVelocity(p1nv);
+        p2.addVelocity(p2nv);
+
 
         window.clear(); 
 
         sf::RectangleShape r(sf::Vector2f(screenWidth,screenWidth));
         r.setFillColor(sf::Color(13,43,69));
         window.draw(r);
-        
-        
-        sf::Sprite outline(t);
-        outline.scale(4,4);
-        drawStars();
-        window.draw(sun.debugDraw(p));
-        
-
-        p.updatePosition();
-        window.draw(p.getSprite());
-        window.draw(outline);
-        window.draw(sun.getSprite());
         for(int i = 0; i < 1024;i++)
         {
             if(!lasers[i].isEmpty)
             {
                 if(lasers[i].update()){
                     lasers[i] = Laser();
+                }else
+                {
+
+                    window.draw(lasers[i].getSprite());
                 }
-                window.draw(lasers[i].getSprite());
             }
         }
+        
+        sf::Sprite outline(t);
+        outline.scale(4,4);
+        drawStars();
+        //window.draw(sun.debugDraw(p));
+        
+
+        p1.updatePosition();
+        p2.updatePosition();
+        window.draw(p1.getSprite());
+        window.draw(p2.getSprite());
+        window.draw(outline);
+        window.draw(sun.getSprite());
+
 
 
         window.display();
