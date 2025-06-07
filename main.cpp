@@ -27,11 +27,18 @@ Sun sun;
 OutLineCollition colliders[360];
 sf::SoundBuffer zap;
 sf::Texture t;
+vector<Laser> lasers;
+
+Player p(screenWidth/2,100);
+
 sf::Vector2i rotateVector(sf::Vector2i v, float r){
     r = r*M_PI/180.0;
     return sf::Vector2i(v.x*cos(r) - v.y*sin(r), v.x*sin(r) + v.y*cos(r));
 }
-
+sf::Vector2f rotateVector(sf::Vector2f v, float r){
+    r = r*M_PI/180.0;
+    return sf::Vector2f(v.x*cos(r) - v.y*sin(r), v.x*sin(r) + v.y*cos(r));
+}
 void initStars(){
     srand(time(0));
     
@@ -76,10 +83,16 @@ void drawColliders(){
         
     }
 }
+bool fireLaser(){
+    sf::Vector2f rv(0,-10);
+    sf::Vector2f r = rotateVector(rv, p.rotation);
+    //cout<<r.x;
+    lasers.push_back(Laser(p.x,p.y,p.rotation, r.x,r.y));
+    return true;
+}
 
 
 
-int tpCooldown =0;
 int main()
 {
 
@@ -90,7 +103,7 @@ int main()
 
     window.setFramerateLimit(60);
     
-    Player p(screenWidth/2,100);
+    
     Collider c1(0,0,10,32);
     Collider c2(0,0,10,10);
     cout<<c2.checkCollition(c1);
@@ -99,7 +112,8 @@ int main()
 
     while (window.isOpen())
     {
-        tpCooldown-=1;
+        p.teleportCoolDown-=1;
+        p.laserCoolDown-=1;
 
         sf::Event event;
         while (window.pollEvent(event))
@@ -127,18 +141,19 @@ int main()
 
         if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
         {
-            p.fireLazer();
+            if(p.laserCoolDown<0)
+            {
+                fireLaser();
+                p.laserCoolDown=10;
+            }
             
-        }
-        else{
-            lmbPressed = false;
         }
 
         for(int i = 0; i < 360;i++){
-            if(colliders[i].collider.checkCollition(p.collider) and tpCooldown < 0){
+            if(colliders[i].collider.checkCollition(p.collider) and p.teleportCoolDown < 0){
                 p.setPosition(colliders[colliders[i].getOpposite()].x,colliders[colliders[i].getOpposite()].y);
 
-                tpCooldown = 25;
+                p.teleportCoolDown = 25;
             }
 
         }
@@ -157,6 +172,7 @@ int main()
         
         
         sf::Sprite outline(t);
+        outline.scale(4,4);
         drawStars();
         window.draw(sun.debugDraw(p));
         
@@ -165,7 +181,11 @@ int main()
         window.draw(p.getSprite());
         window.draw(outline);
         window.draw(sun.getSprite());
-
+        for(Laser l : lasers)
+        {
+            l.update();
+            window.draw(l.getSprite());
+        }
 
 
         window.display();

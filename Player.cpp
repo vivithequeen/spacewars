@@ -6,7 +6,7 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
 #include "Collider.cpp"
-
+#include "Laser.cpp"
 using namespace std;
 #ifndef PLAYER
 #define PLAYER
@@ -15,6 +15,7 @@ class Player
 {
     public:
         sf::Texture texture;
+
         Collider collider;
         const int MAXSPEED = 6;
 
@@ -22,9 +23,13 @@ class Player
         
         float x;
         float y;
+        float teleportCoolDown;
+        float laserCoolDown;
         sf::Vector2f velocity;
-
+        
         Player(int x, int y){
+            laserCoolDown = -1;
+            teleportCoolDown = -1;
             collider = Collider(x,y,16,16);
             this->x =x;
             this->y =y;
@@ -82,6 +87,7 @@ class Player
                 velocity.x*= MAXSPEED/getVectorLength(vc);
                 velocity.y*= MAXSPEED/getVectorLength(vc);
             }
+            int index = 0;
             x+=velocity.x;
             y+=velocity.y;
             collider.updatePosition(x,y);
@@ -94,9 +100,7 @@ class Player
             sprite.setPosition(x,y);
             return sprite;
         }
-        bool fireLazer(){
-            return true;
-        }
+
     private:
         
         sf::Sprite sprite;
