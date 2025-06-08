@@ -39,3 +39,31 @@ yayyy i couldn't figure out how compile it to windows so im really sorry(again :
 - win screens
 
 
+
+## Controls
+
+Player 1
+```
+Left arrow - turn Left
+Right arrow - turn Right
+Up arrow - move forwards
+Down arrow - shoot
+```
+Player 2
+```
+A - turn Left
+D - turn Right
+W - move forwards
+S - shoot
+```
+
+
+
+## Screenshots
+
+![Main menu](https://github.com/vivithequeen/spacewars/blob/main/Screenshot%20from%202025-06-07%2021-37-10.png)
+
+![game](https://github.com/vivithequeen/spacewars/blob/main/Screenshot%20from%202025-06-07%2021-37-26.png)
+
+
+
