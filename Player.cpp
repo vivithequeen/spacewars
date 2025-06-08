@@ -29,15 +29,20 @@ class Player
         float laserCoolDown;
         sf::Vector2f velocity;
         
-        Player(int x, int y, char path[]){
+        Player(int x, int y, int p){
             laserCoolDown = -1;
             teleportCoolDown = -1;
             collider = Collider(x,y,16,16);
             this->x =x;
             this->y =y;
 
-
-            texture.loadFromFile(path);
+            if(p)
+            {
+                texture.loadFromFile("textures/spaceShip.png");
+            }
+            else{
+                texture.loadFromFile("textures/spaceShip2.png");
+            }
             sprite.setTexture(texture);
             sprite.scale(2,2);
             sprite.setOrigin(8,8);

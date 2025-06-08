@@ -38,8 +38,8 @@ enum
     P2WIN = 3,
 };
 int gameStatus = MAIN_MENU;
-Player p1(screenWidth / 2, 128, "textures/spaceShip.png");
-Player p2(screenWidth / 2, 1080 - 128, "textures/spaceShip2.png");
+Player p1(screenWidth / 2, 128, true);
+Player p2(screenWidth / 2, 1080 - 128, false);
 
 sf::Vector2i rotateVector(sf::Vector2i v, float r)
 {
@@ -98,7 +98,7 @@ int findEmptyLaser()
             return i;
         }
     }
-    cout << "ah fuck";
+
     return -1;
 }
 void drawColliders()
