@@ -155,7 +155,7 @@ void p1Inputs()
         if (p1.laserCoolDown < 0)
         {
             p1fireLaser();
-            p1.laserCoolDown = 10;
+            p1.laserCoolDown = 30;
         }
     }
 }
@@ -181,11 +181,18 @@ void p2Inputs()
         if (p2.laserCoolDown < 0)
         {
             p2fireLaser();
-            p2.laserCoolDown = 10;
+            p2.laserCoolDown = 30;
         }
     }
 }
-
+void p1won()
+{
+    gameStatus = P1WIN;
+}
+void p2won()
+{
+    gameStatus = P2WIN;
+}
 int main()
 {
 
@@ -207,29 +214,53 @@ int main()
     cout << c2.checkCollition(c1);
     bool lmbPressed = false;
     font.loadFromFile("fonts/PixelOperator.ttf");
+    s.loadFromFile("textures/sun.png");
     font.setSmooth(false);
+    
     while (window.isOpen())
     {
+        cout<<gameStatus;
         sf::Event event;
         while (window.pollEvent(event))
-        {   
+        {
             // Close window: exit
             if (event.type == sf::Event::Closed)
                 window.close();
         }
-        if( gameStatus == MAIN_MENU){
+        if (gameStatus == MAIN_MENU)
+        {
             window.clear();
             sf::Text text;
+            sf::Text otherText;
             sf::Sprite menuSun;
+
+            menuSun.setTexture(s);
+            menuSun.scale(8, 8);
+            menuSun.setOrigin(3, 3);
+            menuSun.setPosition(screenWidth / 2, screenWidth / 2);
 
             text.setFont(font);
             text.setString("spacewar!");
             text.setFillColor(sf::Color::White);
-            text.scale(4,4);
-            text.setPosition(300,200);
+            text.scale(4, 4);
+            text.setPosition(300, 200);
+
+            otherText.setFont(font);
+            otherText.setString("a recreation by vivithequeen\n        press enter to play");
+            otherText.setFillColor(sf::Color::White);
+            otherText.scale(2.5, 2.5);
+            otherText.setPosition(120, 700);
             drawStars();
+
             window.draw(text);
+            window.draw(menuSun);
+            window.draw(otherText);
             window.display();
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Enter))
+            {
+                // left key is pressed: move our character
+                gameStatus = GAME;
+            }
         }
         else if (gameStatus == GAME)
         {
@@ -269,11 +300,11 @@ int main()
             if (sun.checkCenterCollition(p1.x, p1.y))
             {
 
-                window.close();
+                p2won();
             }
             if (sun.checkCenterCollition(p2.x, p2.y))
             {
-                window.close();
+                p1won();
             }
             window.clear();
 
@@ -293,12 +324,12 @@ int main()
                         if (lasers[i].checkCollition(p1.x, p1.y))
                         {
                             cout << "yeah";
-                            window.close();
+                            p2won();
                         }
 
                         else if (lasers[i].checkCollition(p2.x, p2.y))
                         {
-                            window.close();
+                            p1won();
                         }
                         window.draw(lasers[i].getSprite());
                     }
@@ -316,6 +347,40 @@ int main()
             window.draw(p2.getSprite());
             window.draw(outline);
             window.draw(sun.getSprite());
+
+            window.display();
+        }
+        else if (gameStatus == P1WIN)
+        {
+            window.clear();
+            sf::Text text;
+
+            text.setFont(font);
+            text.setString("P1 WON!");
+            text.setFillColor(sf::Color::White);
+            text.scale(4, 4);
+            text.setPosition(300, 200);
+
+            drawStars();
+
+            window.draw(text);
+
+            window.display();
+        }
+        else if (gameStatus == P2WIN)
+        {
+            window.clear();
+            sf::Text text;
+
+            text.setFont(font);
+            text.setString("P2 WON!");
+            text.setFillColor(sf::Color::White);
+            text.scale(4, 4);
+            text.setPosition(300, 200);
+
+            drawStars();
+
+            window.draw(text);
 
             window.display();
         }
