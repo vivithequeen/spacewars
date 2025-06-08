@@ -17,7 +17,7 @@ class Player
         sf::Texture texture;
 
         Collider collider;
-        const int MAXSPEED = 6;
+        const int MAXSPEED = 4;
 
         float rotation;
         

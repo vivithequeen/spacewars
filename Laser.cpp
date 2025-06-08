@@ -47,6 +47,10 @@ class Laser
     bool checkInBounds(){
         return(x > 0 && y > 0 && x < 1080 && y < 1080);
     }
+    bool checkCollition(int cx, int cy)
+    {   
+        return ((cx-x) * (cx-x)) + ((cy - y) * (cy - y)) < 16;
+    }
     bool update(){
         if(checkInBounds())
         {

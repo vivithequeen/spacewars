@@ -35,7 +35,10 @@ public:
     {        
         return ((cx-x) * (cx-x)) + ((cy - y) * (cy - y)) < r*r;
     }
-
+    bool checkCenterCollition(int cx, int cy)
+    {        
+        return ((cx-x) * (cx-x)) + ((cy - y) * (cy - y)) < 6;
+    }
     sf::Sprite getSprite(){
         sprite.setPosition(x,y);
         
