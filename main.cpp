@@ -25,7 +25,7 @@ float starsLocationsy[amountOfStars];
 
 Sun sun;
 OutLineCollition colliders[360];
-sf::SoundBuffer zap;
+
 sf::Texture t;
 sf::Texture s;
 Laser lasers[1024];
@@ -198,10 +198,7 @@ int main()
 
     setColliders();
     initStars();
-    if (!zap.loadFromFile("audio/laserShoot.wav"))
-    {
-        return -1;
-    }
+
     if (!t.loadFromFile("textures/outline.png"))
     {
         return -1;
